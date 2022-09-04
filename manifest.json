@@ -2,5 +2,8 @@
     "name": "Temperature Watch Extension",
     "description": "Google Chrome extension that alerts the user when the upcoming temperature reaches or exceeds thresholds set by the user",
     "version": "1.0",
-    "manifest_version": 3
+    "manifest_version": 1,
+    "background": {
+        "service_worker": "background.js"
+    }
 }
