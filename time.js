@@ -22,3 +22,15 @@ export function calculateNewDay()
 
     localStorage.savedTimestamp = next.getTime()
 }
+
+export function getTodaysDate()
+{
+    let today = Date.now()
+    return today.toISOString()
+}
+
+export function getTomorrowsDate()
+{
+    let today = new Date(Date.now() + DAY)
+    return today.toISOString()
+}
