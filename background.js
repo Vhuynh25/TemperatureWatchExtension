@@ -7,7 +7,7 @@ function fetchFromLocation(latitude, longitude)
     chrome.storage.sync.get({
         unit: "fahrenheit"
     }, async function (items) {
-        const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min`)
+        const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&start_date=${time_help.getTodaysDate}&end_date=${time_help.getTomorrowsDate}`)
 
         const temperatures = parseWeatherJson(response.json())
 
