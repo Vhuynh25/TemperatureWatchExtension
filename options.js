@@ -1,7 +1,7 @@
 function saveOptions()
 {
-    var max_check = document.getElementById("max_check").value
-    var min_check = document.getElementById("min_check").value
+    var max_check = document.getElementById("max_check").checked
+    var min_check = document.getElementById("min_check").checked
 
     var max_threshold = document.getElementById("max_num").value
     var min_threshold = document.getElementById("min_num").value
@@ -26,8 +26,8 @@ function restoreOptions()
         minThres: -50,
         unit: "fahrenheit"
     }, function (items) {
-        document.getElementById("max_check").value = items.maxCheck
-        document.getElementById("min_check").value = items.minCheck
+        document.getElementById("max_check").checked = items.maxCheck
+        document.getElementById("min_check").checked = items.minCheck
 
         document.getElementById("max_num").value = items.maxThres
         document.getElementById("min_num").value = items.minThres
