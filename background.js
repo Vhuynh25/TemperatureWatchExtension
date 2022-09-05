@@ -94,8 +94,10 @@ chrome.runtime.onStartup.addListener
                 function(position) {
                     const {latitude , longitude } = position.coords
 
-                    
-                    fetchFromLocation(latitude, longitude)
+                    try {
+                        fetchFromLocation(latitude, longitude)
+                    }
+                    catch(error){alert("Error: Unable fetch weather data. Extension will attempt to try again when Chrome is restarted")}
                 })
 
             time_help.calculateNewDay()
