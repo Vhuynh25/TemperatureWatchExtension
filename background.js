@@ -2,11 +2,11 @@ import * as time_help from "./time.js"
 
 const BASEURL = "https://api.open-metro.com/v1/forecast?"
 
-async function fetchFromLocation(latitude, longitude) 
+function fetchFromLocation(latitude, longitude) 
 {
     chrome.storage.sync.get({
         unit: "fahrenheit"
-    }, function (items) {
+    }, async function (items) {
         const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min`)
 
         const temperatures = parseWeatherJson(response.json())
