@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="options.css">
+        <title> Options </title>
+    </head>
+    <body class="options_body">
+        <label>
+            <input type="checkbox" id="max_check">
+            Alert me when forecasts matches or passes maximum temperature
+        </label>
+
+        <label>
+            <input type="number" id="max_num">
+            Maximum temperature threshold
+        </label>
+
+        <label>
+            <input type="checkbox" id="min_check">
+            Alert me when forecasts matches or passes minimum temperature
+        </label>
+
+        <label>
+            <input type="number" id="min_num">
+            Minimum temperature threshold
+        </label>
+
+        <select id="unit">
+            <option value="fahrenheit" selected>Fahrenheit</option>
+            <option value="celsis">Celsis</option>
+        </select>
+
+        <button id="save">Save</button>
+        <script src="options.js"></script>
+    </body>
+</html>
