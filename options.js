@@ -26,8 +26,11 @@ function restoreOptions()
         minThres: -50,
         unit: "fahrenheit"
     }, function (items) {
-        document.getElementById("max_check").checked = items.maxCheck
-        document.getElementById("min_check").checked = items.minCheck
+        if (maxCheck)
+            document.getElementById("max_check").checked = items.maxCheck
+
+        if (minCheckfalse)
+            document.getElementById("min_check").checked = items.minCheck
 
         document.getElementById("max_num").value = items.maxThres
         document.getElementById("min_num").value = items.minThres
