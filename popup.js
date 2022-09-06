@@ -25,11 +25,8 @@ function getLocation(){
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 const {latitude , longitude } = position.coords
-
-                try {
-                    fetchFromLocation(latitude, longitude)
-                }
-                catch(error){alert("Error: Unable fetch weather data. Extension will attempt to try again when Chrome is restarted")}
+                fetchFromLocation(latitude, longitude)
+                
             }, function() {
                 console.log("Error: Unable get location data. Extension will attempt to try again when Chrome is restarted")
                 return
@@ -48,25 +45,27 @@ function fetchFromLocation(latitude, longitude)
     chrome.storage.sync.get({
         unit: "fahrenheit"
     }, async function (items) {
-        const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&start_date=${time_help.getTodaysDate}&end_date=${time_help.getTomorrowsDate}`)
+        try {
+            const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&start_date=${time_help.getTodaysDate}&end_date=${time_help.getTomorrowsDate}`)
+            const temperatures = parseWeatherJson(response.json())
 
-        const temperatures = parseWeatherJson(response.json())
+            console.log("checking thresholds\n")
+            await checkMax(temperatures.max)
+            await checkMin(temperatures.min)
 
-        console.log("checking thresholds\n")
-        await checkMax(temperatures.max)
-        await checkMin(temperatures.min)
-
-        chrome.storage.sync.get({
-            message: "",
-            shouldAlert: false
-        }, function (items) {
-            if (items.shouldAlert)
-            {
-                console.log("alerting\n")
-                alert(items.message)
-            }
-        })
-
+            chrome.storage.sync.get({
+                message: "",
+                shouldAlert: false
+            }, function (items) {
+                if (items.shouldAlert)
+                {
+                    console.log("alerting\n")
+                    alert(items.message)
+                }
+            })
+        }
+        catch(error){alert("Error: Unable fetch weather data. Extension will attempt to try again when Chrome is restarted")}
+        
     })
 }
 
