@@ -87,7 +87,7 @@ async function checkMax(temp)
         if (items.maxCheck && greaterThanMax(items.maxThres, temp))
         {
             chrome.storage.sync.set({
-                message: `${items.message} Warning: Temperature will likely reach higher threshold within 24 hours\n`,
+                message: `${items.message} Warning: Temperature will likely reach or exceed higher threshold of ${items.maxThres} within 24 hours\n`,
                 shouldAlert: true
             })
         }
@@ -105,7 +105,7 @@ async function checkMin(temp)
         if (items.minCheck && lessThanMin(items.minThres, temp))
         {
             chrome.storage.sync.set({
-                message: `${items.message} Warning: Temperature will likely reach lower threshold within 24 hours\n`,
+                message: `${items.message} Warning: Temperature will likely reach or exceed lower threshold of ${items.minThres} within 24 hours\n`,
                 shouldAlert: true
             })
         }
