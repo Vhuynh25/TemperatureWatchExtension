@@ -9,6 +9,13 @@ chrome.runtime.onMessage.addListener(function (data)
         message: ""
     }, function (items) {
         document.getElementById("message").innerHTML = items.message
+        chrome.notifications.create(
+            "Temperature Alert",
+            {
+                type: "basic",
+                message:  items.message
+            }
+        )
     })
 })
 
