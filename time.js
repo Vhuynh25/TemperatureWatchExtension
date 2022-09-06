@@ -3,8 +3,8 @@ const DAY = 24 * 60 * 60 * 1000
 export function calculateTomorrowsDate()
 {
     let nextDay = new Date(Date.now() + DAY)
-    next.setHours(7)
-    next.setMinutes(0)
+    nextDay.setHours(7)
+    nextDay.setMinutes(0)
 
     return next.getTime()
 }
