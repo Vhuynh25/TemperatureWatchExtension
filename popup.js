@@ -67,6 +67,12 @@ function fetchFromLocation(latitude, longitude)
                     {
                         console.log("alerting\n")
                     }
+                    else
+                    {
+                        chrome.storage.sync.set({
+                            message: `Temperature is unlikely reach higher and lower thresholds within 24 hours\n`
+                        })
+                    }
                 })
             })
         }
@@ -82,12 +88,13 @@ async function checkMax(temp)
         maxCheck: false,
         maxThres: 100,
         message: "",
-        shouldAlert: false
+        shouldAlert: false,
+        unit: "fahrenheit"
     }, function (items) {
         if (items.maxCheck && greaterThanMax(items.maxThres, temp))
         {
             chrome.storage.sync.set({
-                message: `${items.message} Warning: Temperature will likely reach or exceed higher threshold of ${items.maxThres} within 24 hours\n`,
+                message: `${items.message} Warning: Temperature will likely reach or exceed higher threshold of ${items.maxThres} ${items.unit} within 24 hours\n`,
                 shouldAlert: true
             })
         }
@@ -100,12 +107,13 @@ async function checkMin(temp)
         minCheck: false,
         minThres: 0,
         message: "",
-        shouldAlert: false
+        shouldAlert: false, 
+        unit: "fahrenheit"
     }, function (items) {
         if (items.minCheck && lessThanMin(items.minThres, temp))
         {
             chrome.storage.sync.set({
-                message: `${items.message} Warning: Temperature will likely reach or exceed lower threshold of ${items.minThres} within 24 hours\n`,
+                message: `${items.message} Warning: Temperature will likely reach or exceed lower threshold of ${items.minThres} ${items.unit} within 24 hours\n`,
                 shouldAlert: true
             })
         }
