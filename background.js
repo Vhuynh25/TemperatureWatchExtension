@@ -12,7 +12,7 @@ function activatePopup()
 
         console.log(`comparing timestamps ${timestamp}\n`)
         if (Date.now() > timestamp){
-            chrome.runtime.sendMessage(APPID,{message: "Weather"})
+            chrome.runtime.sendMessage({message: "Weather"})
         }
     })
 }
