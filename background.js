@@ -1,4 +1,4 @@
-const BASEURL = "https://api.open-metro.com/v1/forecast?"
+
 
 const APPID = chrome.runtime.id
 
@@ -12,7 +12,7 @@ function activatePopup()
 
         console.log(`comparing timestamps ${timestamp}\n`)
         if (Date.now() > timestamp){
-            chrome.runtime.sendMessage({message: "Weather"})
+            //chrome.runtime.sendMessage({message: "Weather"})
         }
     })
 }
