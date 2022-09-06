@@ -1,23 +1,26 @@
 import * as time_help from "./time.js"
 
-chrome.runtime.onMessage.addListener(function (data)
-{
-    if (data.message != "Weather") {return}
+
+
+function runApp(){
+    
     getLocation()
 
     chrome.storage.sync.get({
         message: ""
     }, function (items) {
         document.getElementById("message").innerHTML = items.message
-        chrome.notifications.create(
-            "Temperature Alert",
-            {
-                type: "basic",
-                message:  items.message
-            }
-        )
+        alert(items.message)
+        
     })
+}
+
+chrome.runtime.onMessage.addListener(function (data){ 
+    if (data.message != "Weather") {return}
+    runApp()
 })
+
+window.onload = runApp()
 
 function getLocation(){
     console.log("getting location\n")
@@ -46,6 +49,8 @@ function fetchFromLocation(latitude, longitude)
         unit: "fahrenheit"
     }, async function (items) {
         try {
+            const BASEURL = "https://api.open-metro.com/v1/forecast?"
+            
             const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&start_date=${time_help.getTodaysDate}&end_date=${time_help.getTomorrowsDate}`)
             const temperatures = parseWeatherJson(response.json())
 
@@ -64,7 +69,7 @@ function fetchFromLocation(latitude, longitude)
                 }
             })
         }
-        catch(error){alert("Error: Unable fetch weather data. Extension will attempt to try again when Chrome is restarted")}
+        catch(error){alert(error,message)}
         
     })
 }
