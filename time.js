@@ -11,12 +11,14 @@ export function calculateTomorrowsDate()
 
 export function getTodaysDate()
 {
-    let today = Date.now()
-    return today.toISOString()
+    let today = new Date(0)
+    let todayFormatted = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
+    return todayFormatted 
 }
 
 export function getTomorrowsDate()
 {
-    let today = new Date(Date.now() + DAY)
-    return today.toISOString()
+    let tomorrow = new Date(Date.now() + DAY)
+    let tomorrowFormatted = `${tomorrow.getFullYear()}-${tomorrow.getMonth()}-${tomorrow.getDate()}`
+    return tomorrowFormatted
 }
