@@ -22,7 +22,7 @@ function restoreOptions()
     chrome.storage.sync.get({
         maxCheck: false,
         minCheck: false,
-        maxThres: 100,
+        maxThres: 90,
         minThres: -50,
         unit: "fahrenheit"
     }, function (items) {
