@@ -10,7 +10,7 @@ function runApp(){
         message: ""
     }, function (items) {
         document.getElementById("message").innerHTML = items.message
-        alert(items.message)
+        //alert(items.message)
         
     })
 }
@@ -49,9 +49,12 @@ function fetchFromLocation(latitude, longitude)
         unit: "fahrenheit"
     }, async function (items) {
         try {
-            const BASEURL = "https://api.open-metro.com/v1/forecast?"
-            
-            const response = await fetch(`${BASEURL} + latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&start_date=${time_help.getTodaysDate}&end_date=${time_help.getTomorrowsDate}`)
+            const BASEURL = "https://api.open-meteo.com/v1/forecast?"
+
+            const end = time_help.getTomorrowsDate()
+            const start = time_help.getTodaysDate()
+
+            const response = await fetch(`${BASEURL}latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&timezone=auto&start_date=${start}&end_date=${end}`)
             const temperatures = parseWeatherJson(response.json())
 
             console.log("checking thresholds\n")
