@@ -3,7 +3,6 @@ import * as time_help from "./time.js"
 
 
 function runApp(){
-    
     getLocation()
 
     chrome.storage.sync.get({
@@ -11,7 +10,6 @@ function runApp(){
     }, function (items) {
         document.getElementById("message").innerHTML = items.message
         //alert(items.message)
-        
     })
 }
 
@@ -55,21 +53,21 @@ function fetchFromLocation(latitude, longitude)
             const start = time_help.getTodaysDate()
 
             const response = await fetch(`${BASEURL}latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&daily=temperature_2m_max,temperature_2m_min&timezone=auto&start_date=${start}&end_date=${end}`)
-            const temperatures = parseWeatherJson(response.json())
+            await response.json().then(async function (data){
+                const temperatures = parseWeatherJson(data)
+                console.log("checking thresholds\n")
+                await checkMax(temperatures.max)
+                await checkMin(temperatures.min)
 
-            console.log("checking thresholds\n")
-            await checkMax(temperatures.max)
-            await checkMin(temperatures.min)
-
-            chrome.storage.sync.get({
-                message: "",
-                shouldAlert: false
-            }, function (items) {
-                if (items.shouldAlert)
-                {
-                    console.log("alerting\n")
-                    alert(items.message)
-                }
+                chrome.storage.sync.get({
+                    message: "",
+                    shouldAlert: false
+                }, function (items) {
+                    if (items.shouldAlert)
+                    {
+                        console.log("alerting\n")
+                    }
+                })
             })
         }
         catch(error){alert(error,message)}
@@ -86,7 +84,7 @@ async function checkMax(temp)
         message: "",
         shouldAlert: false
     }, function (items) {
-        if (maxCheck && greaterThanMax(items.maxThres, maxTemp))
+        if (items.maxCheck && greaterThanMax(items.maxThres, temp))
         {
             chrome.storage.sync.set({
                 message: `${items.message} Warning: Temperature will likely reach higher threshold within 24 hours\n`,
@@ -104,7 +102,7 @@ async function checkMin(temp)
         message: "",
         shouldAlert: false
     }, function (items) {
-        if (minCheck && lessThanMin(items.maxThres, minTemp))
+        if (items.minCheck && lessThanMin(items.minThres, temp))
         {
             chrome.storage.sync.set({
                 message: `${items.message} Warning: Temperature will likely reach lower threshold within 24 hours\n`,
@@ -116,9 +114,9 @@ async function checkMin(temp)
 
 function parseWeatherJson(json)
 {
-    dailyData = json.daily
-    maxTemp = Math.max(dailyData.temperature_2m_max)
-    minTemp = Math.min(dailyData.temperature_2m_min)
+    const dailyData = json["daily"]
+    const maxTemp = Math.max(...dailyData["temperature_2m_max"])
+    const minTemp = Math.min(...dailyData["temperature_2m_min"])
 
     return {max: maxTemp, min: minTemp}
 }
@@ -132,3 +130,5 @@ function lessThanMin(min, temp)
 {
     return temp < min
 }
+
+document.getElementById("test").addEventListener('click', runApp)
