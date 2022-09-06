@@ -1,6 +1,8 @@
-window.onload = function ()
-{
+import * as time_help from "./time.js"
 
+chrome.runtime.onMessage.addListener(function (data)
+{
+    if (data.message != "Weather") {return}
     getLocation()
 
     chrome.storage.sync.get({
@@ -8,7 +10,7 @@ window.onload = function ()
     }, function (items) {
         document.getElementById("message").innerHTML = items.message
     })
-}
+})
 
 function getLocation(){
     console.log("getting location\n")
@@ -61,6 +63,25 @@ function fetchFromLocation(latitude, longitude)
     })
 }
 
+async function checkMax(temp)
+{
+    chrome.storage.sync.set({message: ""})
+    chrome.storage.sync.get({
+        maxCheck: false,
+        maxThres: 100,
+        message: "",
+        shouldAlert: false
+    }, function (items) {
+        if (maxCheck && greaterThanMax(items.maxThres, maxTemp))
+        {
+            chrome.storage.sync.set({
+                message: `${items.message} Warning: Temperature will likely reach higher threshold within 24 hours\n`,
+                shouldAlert: true
+            })
+        }
+    })
+}
+
 async function checkMin(temp)
 {
     chrome.storage.sync.get({
@@ -71,7 +92,6 @@ async function checkMin(temp)
     }, function (items) {
         if (minCheck && lessThanMin(items.maxThres, minTemp))
         {
-
             chrome.storage.sync.set({
                 message: `${items.message} Warning: Temperature will likely reach lower threshold within 24 hours\n`,
                 shouldAlert: true

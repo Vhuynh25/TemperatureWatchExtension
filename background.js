@@ -1,8 +1,8 @@
-import * as time_help from "./time.js"
-
 const BASEURL = "https://api.open-metro.com/v1/forecast?"
 
-function tempAlert() 
+const APPID = chrome.runtime.id
+
+function activatePopup() 
 {
     console.log("checking for new day\n")
     chrome.storage.sync.get({
@@ -12,33 +12,13 @@ function tempAlert()
 
         console.log(`comparing timestamps ${timestamp}\n`)
         if (Date.now() > timestamp){
-            
+            chrome.runtime.sendMessage(APPID,{message: "Weather"})
         }
     })
 }
 
-
-
-async function checkMax(temp)
-{
-    chrome.storage.sync.set({message: ""})
-    chrome.storage.sync.get({
-        maxCheck: false,
-        maxThres: 100,
-        message: "",
-        shouldAlert: false
-    }, function (items) {
-        if (maxCheck && greaterThanMax(items.maxThres, maxTemp))
-        {
-            chrome.storage.sync.set({
-                message: `${items.message} Warning: Temperature will likely reach higher threshold within 24 hours\n`,
-                shouldAlert: true
-            })
-        }
-    })
-}
 
 chrome.runtime.onStartup.addListener
 ( 
-    tempAlert()
+    activatePopup()
 )
