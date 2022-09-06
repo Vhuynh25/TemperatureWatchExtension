@@ -2,8 +2,44 @@ import * as time_help from "./time.js"
 
 const BASEURL = "https://api.open-metro.com/v1/forecast?"
 
+function tempAlert() 
+{
+    console.log("checking for new day\n")
+    chrome.storage.sync.get({
+        timestamp: Date.now() - 500000
+    }, async function (items) {
+        var timestamp = items.timestamp
+
+        console.log(`comparing timestamps ${timestamp}\n`)
+        if (Date.now() > timestamp){
+            console.log("getting location\n")
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const {latitude , longitude } = position.coords
+
+                        try {
+                            fetchFromLocation(latitude, longitude)
+                        }
+                        catch(error){alert("Error: Unable fetch weather data. Extension will attempt to try again when Chrome is restarted")}
+                    }, function() {
+                        console.log("Error: Unable get location data. Extension will attempt to try again when Chrome is restarted")
+                        return
+                    }, 
+                    {timeout: 1000}
+                )
+                chrome.storage.sync.get({timestamp: time_help.calculateTomorrowsDate()})
+            }
+            else 
+                console.log("Error: navigator.geolocation undefined")
+        }
+    })
+}
+
 function fetchFromLocation(latitude, longitude) 
 {
+    console.log("fetching weather data\n")
     chrome.storage.sync.get({
         unit: "fahrenheit"
     }, async function (items) {
@@ -11,6 +47,7 @@ function fetchFromLocation(latitude, longitude)
 
         const temperatures = parseWeatherJson(response.json())
 
+        console.log("checking thresholds\n")
         await checkMax(temperatures.max)
         await checkMin(temperatures.min)
 
@@ -20,6 +57,7 @@ function fetchFromLocation(latitude, longitude)
         }, function (items) {
             if (items.shouldAlert)
             {
+                console.log("alerting\n")
                 alert(items.message)
             }
         })
@@ -86,21 +124,5 @@ function lessThanMin(min, temp)
 
 chrome.runtime.onStartup.addListener
 ( 
-    function tempAlert() 
-    {
-        if (time_help.checkForNewDay())
-        {    
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const {latitude , longitude } = position.coords
-
-                    try {
-                        fetchFromLocation(latitude, longitude)
-                    }
-                    catch(error){alert("Error: Unable fetch weather data. Extension will attempt to try again when Chrome is restarted")}
-                })
-
-            time_help.calculateNewDay()
-        }
-    }
+    tempAlert()
 )
