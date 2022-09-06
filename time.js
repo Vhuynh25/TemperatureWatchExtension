@@ -6,7 +6,7 @@ export function calculateTomorrowsDate()
     nextDay.setHours(7)
     nextDay.setMinutes(0)
 
-    return next.getTime()
+    return nextDay.getTime()
 }
 
 export function getTodaysDate()
