@@ -50,7 +50,7 @@ function fetchFromLocation(latitude, longitude)
             const end = time_help.getTomorrowsDate()
             const start = time_help.getTodaysDate()
 
-            const response = await fetch(`${BASEURL}latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&hourly=temperature_2m_max,temperature_2m_min&timezone=auto&start_date=${start}&end_date=${end}`)
+            const response = await fetch(`${BASEURL}latitude=${latitude}&longitude=${longitude}&temperature_unit=${items.unit}&hourly=temperature_2m&timezone=auto&start_date=${start}&end_date=${end}`)
             await response.json().then(async function (data){
                 const temperatures = parseWeatherJson(data)
                 console.log("checking thresholds\n")
@@ -121,8 +121,8 @@ async function checkMin(temp)
 function parseWeatherJson(json)
 {
     const dailyData = json["hourly"]
-    const maxTemp = Math.max(...dailyData["temperature_2m_max"])
-    const minTemp = Math.min(...dailyData["temperature_2m_min"])
+    const maxTemp = Math.max(...dailyData["temperature_2m"])
+    const minTemp = Math.min(...dailyData["temperature_2m"])
 
     return {max: maxTemp, min: minTemp}
 }
